@@ -1,1 +1,1 @@
-AWS Fundamentals: Building Serverless Applicationss
+AWS Fundamentals: Building Serverless Applications
