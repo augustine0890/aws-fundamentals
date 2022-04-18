@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -10,14 +11,19 @@ import (
 )
 
 func main() {
+	ctx := context.TODO()
 	// Load the shared AWS Configuration (~/.aws/config)
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion("us-east-1")) // specify region
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to load AWS configuration: %v", err)
 	}
 
 	// Create an Amazon S3 service client
 	client := s3.NewFromConfig(cfg)
+
+	// create new context with a timeout, e.g. 10 seconds
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 
 	// Get the first page of results for ListObjectsV2 for a bucket
 	output, err := client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
