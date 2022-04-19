@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 )
 
 // S3ListBucketsAPI
@@ -69,5 +70,37 @@ func main() {
 	log.Println("The First Page Results:")
 	for _, object := range output.Contents {
 		log.Printf("key=%s size=%d", aws.ToString(object.Key), object.Size)
+	}
+
+	params := &s3.SelectObjectContentInput{
+		Bucket:         aws.String("dragons-app-20220417"),
+		Key:            aws.String("dragon_stats_one.txt"),
+		ExpressionType: "SQL",
+		Expression:     aws.String("SELECT * FROM S3Object[*][*] s"),
+		InputSerialization: &types.InputSerialization{
+			JSON: &types.JSONInput{
+				Type: "DOCUMENT",
+			},
+		},
+		OutputSerialization: &types.OutputSerialization{
+			JSON: &types.JSONOutput{
+				RecordDelimiter: aws.String(","),
+			},
+		},
+	}
+
+	resp, err := client.SelectObjectContent(context.TODO(), params)
+	if err != nil {
+		fmt.Println("Got an error selecting object:")
+		fmt.Println(err)
+		return
+	}
+	defer resp.GetStream().Close()
+
+	for evt := range resp.GetStream().Events() {
+		switch v := evt.(type) {
+		case *types.RecordsEvent:
+			fmt.Println(v)
+		}
 	}
 }
