@@ -18,3 +18,6 @@
   - `go get github.com/aws/aws-sdk-go-v2/config`
 - Amazon S3 API client
   - `go get github.com/aws/aws-sdk-go-v2/service/s3`
+
+## Install AWS SDK Go [V1](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/welcome.html)
+- [API](https://docs.aws.amazon.com/sdk-for-go/api/index.html) Referance V1
