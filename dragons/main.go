@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -9,6 +10,24 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
+
+// S3ListBucketsAPI
+type S3ListBucketsAPI interface {
+	ListBuckets(ctx context.Context,
+		params *s3.ListBucketsInput,
+		optFns ...func(*s3.Options)) (*s3.ListBucketsOutput, error)
+}
+
+// GetAllBuckets retrieves all buckets
+// Inputs:
+//  c is the context of the method call, which includes the AWS Region.
+//	api is the interface that defines the method call.
+//	input defines the input arguments to the service call.
+// Outputs:
+//	ListBucketsOutput object containing the result of the service call and nil.
+func GetAllBuckets(c context.Context, api S3ListBucketsAPI, input *s3.ListBucketsInput) (*s3.ListBucketsOutput, error) {
+	return api.ListBuckets(c, input)
+}
 
 func main() {
 	ctx := context.TODO()
@@ -24,6 +43,20 @@ func main() {
 	// create new context with a timeout, e.g. 10 seconds
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
+
+	input := &s3.ListBucketsInput{}
+	// List buckets
+	result, err := GetAllBuckets(context.TODO(), client, input)
+	if err != nil {
+		fmt.Println("Got an error retrieving buckets: ", err)
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("Buckets:")
+	for _, bucket := range result.Buckets {
+		fmt.Println(*bucket.Name + ": " + bucket.CreationDate.Format("2006-01-02 15:04:05 Monday"))
+	}
 
 	// Get the first page of results for ListObjectsV2 for a bucket
 	output, err := client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
