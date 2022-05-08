@@ -21,3 +21,6 @@
 
 ## Install AWS SDK Go [V1](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/welcome.html)
 - [API](https://docs.aws.amazon.com/sdk-for-go/api/index.html) Referance V1
+
+## API Authentication
+- Amazon [Cognito](https://aws-tc-largeobjects.s3.amazonaws.com/DEV-AWS-MO-BuildingRedux/node-exercise-3-cognito.html) Authentication
