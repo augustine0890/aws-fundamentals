@@ -26,5 +26,5 @@ func (app *Application) queryBucket(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	json.NewEncoder(w).Encode(string(payload))
+	json.NewEncoder(w).Encode(Prettier(string(payload)))
 }
