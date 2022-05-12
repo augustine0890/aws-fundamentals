@@ -1,28 +1,20 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"log"
+	"net/http"
+
+	"dragons/pkg/storage"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
-// GetAllBuckets retrieves a list of all buckets.
-// Inputs:
-//     sess is the current session, which provides configuration for the SDK's service clients
-// Output:
-//     If success, the list of buckets and nil
-//     Otherwise, nil and an error from the call to ListBuckets
-func GetAllBuckets(sess *session.Session) (*s3.ListBucketsOutput, error) {
-	svc := s3.New(sess)
-
-	result, err := svc.ListBuckets(&s3.ListBucketsInput{})
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+type Application struct {
+	storage *storage.Storage
 }
 
 func ReadDragons(sess *session.Session) {
@@ -76,16 +68,18 @@ func main() {
 		},
 	}))
 
-	result, err := GetAllBuckets(sess)
-	if err != nil {
-		fmt.Printf("Error getting buckets: %v", err)
-		return
-	}
-
-	fmt.Println("Buckets:")
-	for _, bucket := range result.Buckets {
-		fmt.Println(*bucket.Name + " " + bucket.CreationDate.Format("2016-01-02 15:04:05 Monday"))
-	}
-
 	ReadDragons(sess)
+	addr := flag.String("addr", ":4000", "HTTP network address")
+	flag.Parse()
+	app := &Application{
+		storage: storage.NewStorage(),
+	}
+
+	srv := &http.Server{
+		Addr:    *addr,
+		Handler: app.routes(),
+	}
+	log.Printf("Starting server on %s", *addr)
+	err := srv.ListenAndServe()
+	log.Fatal(err)
 }
