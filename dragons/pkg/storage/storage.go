@@ -1,19 +1,17 @@
 package storage
 
 import (
+	"errors"
 	"log"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 const AWS_REGION_NAME = "us-east-1"
-
-var (
-	s3sessions = make(map[string]*s3.S3)
-)
 
 type Storage struct {
 	region string
@@ -65,6 +63,29 @@ func (s *Storage) GetBuckets() (b []Bucket, err error) {
 		})
 	}
 	return b, nil
+}
+
+func (s *Storage) CreateBucket(bucketName string) (name *s3.CreateBucketOutput, err error) {
+	input := &s3.CreateBucketInput{
+		Bucket: aws.String(bucketName),
+	}
+	result, err := s.s3sess.CreateBucket(input)
+	if err != nil {
+		if aerr, ok := err.(awserr.Error); ok {
+			switch aerr.Code() {
+			case s3.ErrCodeBucketAlreadyExists:
+				return nil, errors.New("Bucket Already Exists")
+			case s3.ErrCodeBucketAlreadyOwnedByYou:
+				return nil, errors.New("Bucket Already Owned By You")
+			default:
+				return nil, errors.New(aerr.Error())
+			}
+		} else {
+			return nil, errors.New(err.Error())
+		}
+	}
+	log.Println(result.String())
+	return result, nil
 }
 
 func (s *Storage) QueryBucket(bucketName string) (payload []byte, err error) {
