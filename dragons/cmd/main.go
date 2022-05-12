@@ -61,18 +61,18 @@ func ReadDragons(sess *session.Session) {
 }
 
 func main() {
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-		Config: aws.Config{
-			Region: aws.String("us-east-1"),
-		},
-	}))
+	// sess := session.Must(session.NewSessionWithOptions(session.Options{
+		// SharedConfigState: session.SharedConfigEnable,
+		// Config: aws.Config{
+			// Region: aws.String("us-east-1"),
+		// },
+	// }))
 
-	ReadDragons(sess)
+	// ReadDragons(sess)
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
 	app := &Application{
-		storage: storage.NewStorage(),
+		storage: storage.NewStorage(""),
 	}
 
 	srv := &http.Server{

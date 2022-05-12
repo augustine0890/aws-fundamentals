@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -13,5 +14,6 @@ func (app *Application) listBuckets(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
+	fmt.Println("List buckets", buckets)
 	json.NewEncoder(w).Encode(buckets)
 }
