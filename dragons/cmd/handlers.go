@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dragons/pkg/storage"
 	"encoding/json"
 	"net/http"
 )
@@ -49,6 +50,7 @@ func (app *Application) createBucket(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	json.NewEncoder(w).Encode(result.String())
 }
 
@@ -70,7 +72,11 @@ func (app *Application) deleteBucket(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	return
+	json.NewEncoder(w).Encode(storage.BucketResponse{
+		Name:    name,
+		Success: true,
+		Action:  "delete",
+	})
 }
 
 func (app *Application) listItems(w http.ResponseWriter, r *http.Request) {
