@@ -39,11 +39,6 @@ func NewStorage(region string) *Storage {
 	}
 }
 
-type Bucket struct {
-	Name         string
-	CreationDate string
-}
-
 // GetBuckets retrieves a list of all buckets.
 // Inputs:
 //     sess is the current session, which provides configuration for the SDK's service clients
@@ -130,4 +125,21 @@ func (s *Storage) QueryBucket(bucketName string) (payload []byte, err error) {
 		return nil, err
 	}
 	return payload, nil
+}
+
+func (s *Storage) ListItems(bucketName string) (bo []BucketObject, err error) {
+	result, err := s.s3sess.ListObjectsV2(&s3.ListObjectsV2Input{
+		Bucket: aws.String(bucketName),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	for _, object := range result.Contents {
+		bo = append(bo, BucketObject{
+			Name: *object.Key,
+			Size: *object.Size,
+		})
+	}
+	return bo, nil
 }

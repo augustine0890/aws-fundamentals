@@ -51,3 +51,18 @@ func (app *Application) createBucket(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(result.String())
 }
+
+func (app *Application) listItems(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	name := r.URL.Query().Get("name")
+	if name == "" {
+		http.Error(w, "Empty Bucket Name", http.StatusBadRequest)
+		return
+	}
+
+	items, err := app.storage.ListItems(name)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	json.NewEncoder(w).Encode(items)
+}
