@@ -7,6 +7,7 @@ func (app *Application) routes() *http.ServeMux {
 
 	mux.HandleFunc("/s3/list", app.listBuckets)
 	mux.HandleFunc("/s3/bucket/list", app.listItems)
+	mux.HandleFunc("/s3/bucket", app.deleteBucket)
 	mux.HandleFunc("/s3/bucket", app.queryBucket)
 	mux.HandleFunc("/s3/create", app.createBucket)
 

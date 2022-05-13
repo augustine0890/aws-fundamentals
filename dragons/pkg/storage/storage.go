@@ -83,6 +83,25 @@ func (s *Storage) CreateBucket(bucketName string) (name *s3.CreateBucketOutput, 
 	return result, nil
 }
 
+func (s *Storage) RemoveBucket(bucketName string) error {
+	input := &s3.DeleteBucketInput{
+		Bucket: aws.String(bucketName),
+	}
+	_, err := s.s3sess.DeleteBucket(input)
+	if err != nil {
+		return err
+	}
+
+	err = s.s3sess.WaitUntilBucketNotExists(&s3.HeadBucketInput{
+		Bucket: aws.String(bucketName),
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *Storage) QueryBucket(bucketName string) (payload []byte, err error) {
 	params := &s3.SelectObjectContentInput{
 		Bucket:         aws.String(bucketName),

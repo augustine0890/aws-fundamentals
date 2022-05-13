@@ -52,6 +52,27 @@ func (app *Application) createBucket(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result.String())
 }
 
+func (app *Application) deleteBucket(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method != http.MethodDelete {
+		w.Header().Set("Allow", http.MethodDelete)
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	name := r.URL.Query().Get("name")
+	if name == "" {
+		http.Error(w, "Empty Bucket Name", http.StatusBadRequest)
+		return
+	}
+
+	err := app.storage.RemoveBucket(name)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	return
+}
+
 func (app *Application) listItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	name := r.URL.Query().Get("name")
