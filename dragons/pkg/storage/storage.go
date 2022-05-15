@@ -60,27 +60,35 @@ func (s *Storage) GetBuckets() (b []Bucket, err error) {
 	return b, nil
 }
 
-func (s *Storage) CreateBucket(bucketName string) (name *s3.CreateBucketOutput, err error) {
+func (s *Storage) CreateBucket(bucketName string) error {
 	input := &s3.CreateBucketInput{
 		Bucket: aws.String(bucketName),
 	}
-	result, err := s.s3sess.CreateBucket(input)
+	_, err := s.s3sess.CreateBucket(input)
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			case s3.ErrCodeBucketAlreadyExists:
-				return nil, errors.New("Bucket Already Exists")
+				return errors.New("Bucket Already Exists")
 			case s3.ErrCodeBucketAlreadyOwnedByYou:
-				return nil, errors.New("Bucket Already Owned By You")
+				return errors.New("Bucket Already Owned By You")
 			default:
-				return nil, errors.New(aerr.Error())
+				return errors.New(aerr.Error())
 			}
 		} else {
-			return nil, errors.New(err.Error())
+			return errors.New(err.Error())
 		}
 	}
-	log.Println(result.String())
-	return result, nil
+
+	err = s.s3sess.WaitUntilBucketExists(&s3.HeadBucketInput{
+		Bucket: &bucketName,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *Storage) RemoveBucket(bucketName string) error {

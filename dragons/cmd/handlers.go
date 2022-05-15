@@ -45,13 +45,17 @@ func (app *Application) createBucket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := app.storage.CreateBucket(name)
+	err := app.storage.CreateBucket(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	json.NewEncoder(w).Encode(result.String())
+	json.NewEncoder(w).Encode(storage.BucketResponse{
+		Name:    name,
+		Success: true,
+		Action:  "create",
+	})
 }
 
 func (app *Application) deleteBucket(w http.ResponseWriter, r *http.Request) {
