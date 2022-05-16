@@ -1,14 +1,14 @@
-package main
+package http
 
 import (
-	"dragons/pkg/storage"
+	"dragons/internal/storage"
 	"encoding/json"
 	"net/http"
 )
 
-func (app *Application) listBuckets(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) listBuckets(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	buckets, err := app.storage.GetBuckets()
+	buckets, err := h.Storage.GetBuckets()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -17,21 +17,21 @@ func (app *Application) listBuckets(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(buckets)
 }
 
-func (app *Application) queryBucket(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) queryBucket(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	name := r.URL.Query().Get("name")
 	if name == "" {
 		http.Error(w, "Empty Bucket Name", http.StatusBadRequest)
 		return
 	}
-	payload, err := app.storage.QueryBucket(name)
+	payload, err := h.Storage.QueryBucket(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Write(payload)
 }
 
-func (app *Application) createBucket(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) createBucket(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method != http.MethodPost {
 		w.Header().Set("Allow", http.MethodPost)
@@ -45,7 +45,7 @@ func (app *Application) createBucket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := app.storage.CreateBucket(name)
+	err := h.Storage.CreateBucket(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -58,7 +58,7 @@ func (app *Application) createBucket(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (app *Application) deleteBucket(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) deleteBucket(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method != http.MethodDelete {
 		w.Header().Set("Allow", http.MethodDelete)
@@ -71,7 +71,7 @@ func (app *Application) deleteBucket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := app.storage.RemoveBucket(name)
+	err := h.Storage.RemoveBucket(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -83,7 +83,7 @@ func (app *Application) deleteBucket(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (app *Application) listItems(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) listItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	name := r.URL.Query().Get("name")
 	if name == "" {
@@ -91,7 +91,7 @@ func (app *Application) listItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	items, err := app.storage.ListItems(name)
+	items, err := h.Storage.ListItems(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

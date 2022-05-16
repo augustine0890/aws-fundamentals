@@ -1,27 +1,25 @@
 package main
 
 import (
+	"dragons/internal/storage"
 	"flag"
 	"log"
 	"net/http"
 
-	"dragons/pkg/storage"
+	transportHttp "dragons/internal/transport/http"
 )
-
-type Application struct {
-	storage *storage.Storage
-}
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
-	app := &Application{
-		storage: storage.NewStorage(""),
-	}
+
+	storageService := storage.NewStorage("")
+
+	httpHandler := transportHttp.NewHandler(storageService)
 
 	srv := &http.Server{
 		Addr:    *addr,
-		Handler: app.routes(),
+		Handler: httpHandler.Router,
 	}
 	log.Printf("Starting server on %s", *addr)
 	err := srv.ListenAndServe()
