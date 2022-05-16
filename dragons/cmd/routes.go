@@ -7,13 +7,14 @@ import (
 )
 
 func (app *Application) routes() *mux.Router {
-	mux := mux.NewRouter()
+	routers := mux.NewRouter()
 
-	mux.HandleFunc("/s3/buckets", app.listBuckets)
-	mux.HandleFunc("/s3/bucket/items", app.listItems)
-	mux.HandleFunc("/s3/bucket", app.createBucket).Methods(http.MethodPost)
-	mux.HandleFunc("/s3/bucket", app.queryBucket).Methods(http.MethodGet)
-	mux.HandleFunc("/s3/bucket", app.deleteBucket).Methods(http.MethodDelete)
+	s3 := routers.PathPrefix("/s3").Subrouter()
+	s3.HandleFunc("/buckets", app.listBuckets)
+	s3.HandleFunc("/bucket/items", app.listItems)
+	s3.HandleFunc("/bucket", app.createBucket).Methods(http.MethodPost)
+	s3.HandleFunc("/bucket", app.queryBucket).Methods(http.MethodGet)
+	s3.HandleFunc("/bucket", app.deleteBucket).Methods(http.MethodDelete)
 
-	return mux
+	return routers
 }
