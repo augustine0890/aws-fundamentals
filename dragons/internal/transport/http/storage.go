@@ -94,6 +94,29 @@ func (h *Handler) listItems(w http.ResponseWriter, r *http.Request) {
 	items, err := h.Storage.ListItems(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	json.NewEncoder(w).Encode(items)
+}
+
+func (h *Handler) uploadFile(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	bucket := r.URL.Query().Get("bucket")
+	filename := r.URL.Query().Get("filename")
+	if bucket == "" || filename == "" {
+		http.Error(w, "You must supply a bucket (bucket) name and file name (filename)", http.StatusBadRequest)
+		return
+	}
+
+	err := h.Storage.UploadFile(bucket, filename)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(storage.ItemResponse{
+		Bucket:  bucket,
+		File:    filename,
+		Success: true,
+		Action:  "upload",
+	})
 }

@@ -3,19 +3,22 @@ package storage
 import (
 	"errors"
 	"log"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
 const AWS_REGION_NAME = "us-east-1"
 
 type Storage struct {
-	region string
-	s3sess *s3.S3
+	region  string
+	session *session.Session
+	s3sess  *s3.S3
 }
 
 func NewStorage(region string) *Storage {
@@ -34,8 +37,9 @@ func NewStorage(region string) *Storage {
 	s := s3.New(sess)
 
 	return &Storage{
-		region: region,
-		s3sess: s,
+		region:  region,
+		session: sess,
+		s3sess:  s,
 	}
 }
 
@@ -169,4 +173,27 @@ func (s *Storage) ListItems(bucketName string) (bo []BucketObject, err error) {
 		})
 	}
 	return bo, nil
+}
+
+func (s *Storage) UploadFile(bucketName string, filename string) error {
+	file, err := os.Open(filename)
+	if err != nil {
+		log.Printf("Unable to open file %v", err)
+		return err
+	}
+	defer file.Close()
+
+	uploader := s3manager.NewUploader(s.session)
+
+	_, err = uploader.Upload(&s3manager.UploadInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String(filename),
+		Body:   file,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

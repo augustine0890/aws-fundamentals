@@ -25,7 +25,8 @@ func NewHandler(storage *storage.Storage) *Handler {
 func (h *Handler) mapRoutes() {
 	s3 := h.Router.PathPrefix("/s3").Subrouter()
 	s3.HandleFunc("/buckets", h.listBuckets)
-	s3.HandleFunc("/bucket/items", h.listItems)
+	s3.HandleFunc("/bucket/items", h.listItems).Methods(http.MethodGet)
+	s3.HandleFunc("/bucket/item", h.uploadFile).Methods(http.MethodPost)
 	s3.HandleFunc("/bucket", h.createBucket).Methods(http.MethodPost)
 	s3.HandleFunc("/bucket", h.queryBucket).Methods(http.MethodGet)
 	s3.HandleFunc("/bucket", h.deleteBucket).Methods(http.MethodDelete)

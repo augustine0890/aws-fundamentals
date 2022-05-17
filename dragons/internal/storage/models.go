@@ -15,3 +15,10 @@ type BucketResponse struct {
 	Success bool
 	Action  string
 }
+
+type ItemResponse struct {
+	Bucket  string
+	File    string
+	Success bool
+	Action  string
+}
