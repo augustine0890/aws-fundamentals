@@ -27,6 +27,7 @@ func (h *Handler) queryBucket(w http.ResponseWriter, r *http.Request) {
 	payload, err := h.Storage.QueryBucket(name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	w.Write(payload)
 }

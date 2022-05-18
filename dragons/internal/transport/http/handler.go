@@ -35,7 +35,7 @@ func (h *Handler) mapRoutes() {
 	s3.HandleFunc("/bucket", h.queryBucket).Methods(http.MethodGet)
 	s3.HandleFunc("/bucket", h.deleteBucket).Methods(http.MethodDelete)
 
-	// auth := h.Router.PathPrefix("/auth").Subrouter()
-	// auth.HandleFunc("/", app.testing)
+	auth := h.Router.PathPrefix("/auth").Subrouter()
+	auth.HandleFunc("/sigup", h.sigup).Methods(http.MethodPost)
 
 }
