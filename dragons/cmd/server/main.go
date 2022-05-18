@@ -1,7 +1,9 @@
 package main
 
 import (
+	"dragons/internal/auth"
 	"dragons/internal/storage"
+
 	"flag"
 	"log"
 	"net/http"
@@ -14,8 +16,9 @@ func main() {
 	flag.Parse()
 
 	storageService := storage.NewStorage("")
+	authService := auth.NewAuth("")
 
-	httpHandler := transportHttp.NewHandler(storageService)
+	httpHandler := transportHttp.NewHandler(storageService, authService)
 
 	srv := &http.Server{
 		Addr:    *addr,

@@ -24,5 +24,13 @@
 
 ## API Authentication
 - Amazon [Cognito](https://aws-tc-largeobjects.s3.amazonaws.com/DEV-AWS-MO-BuildingRedux/node-exercise-3-cognito.html) Authentication
-
+- There are two main components of Amazon Cognito:
+  - User Pools
+  - Identity Pools
+- User pools are user directories that probide sign-up and sign-in options for your app users.
+- Identity pools enable you to grant your users temporay AWS credentials to access AWS services, such as Amazon S3 or DynamoDB.
+- Use Cases:
+  - Access resourses with API Gateway and Lambda with a User Pool. API Gateway validate the tokens from a successful user pool authentication, and uses them to grant your users access to resourses including Lambda functions, or your own API.
+  - After a successful user pool authentication, your app will receive user pool tokens from Amazon Cognito. You can exchange them for temporay access to other AWS services with an identity pool.
+  
 ## Serverless Computing and Lamda

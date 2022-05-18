@@ -1,8 +1,10 @@
 package http
 
 import (
-	"dragons/internal/storage"
 	"net/http"
+
+	"dragons/internal/auth"
+	"dragons/internal/storage"
 
 	"github.com/gorilla/mux"
 )
@@ -10,11 +12,13 @@ import (
 type Handler struct {
 	Router  *mux.Router
 	Storage *storage.Storage
+	Auth    *auth.Auth
 }
 
-func NewHandler(storage *storage.Storage) *Handler {
+func NewHandler(storage *storage.Storage, auth *auth.Auth) *Handler {
 	h := &Handler{
 		Storage: storage,
+		Auth:    auth,
 	}
 	h.Router = mux.NewRouter()
 	h.mapRoutes()
