@@ -39,4 +39,5 @@ func (h *Handler) mapRoutes() {
 	auth.HandleFunc("/sigup", h.sigup).Methods(http.MethodPost)
 	auth.HandleFunc("/confirm", h.confirm).Methods(http.MethodPost)
 	auth.HandleFunc("/login", h.login).Methods(http.MethodPost)
+	auth.HandleFunc("/logout", h.logout).Methods(http.MethodPost)
 }

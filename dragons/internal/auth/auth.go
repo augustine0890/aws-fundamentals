@@ -105,15 +105,15 @@ func (a *Auth) ConfirmSignUp(uc *UserConfirm) (string, error) {
 func (a *Auth) Login(u *User) (string, error) {
 	secretHash := computeSecretHash(a.AppClientSecret, u.Email, a.AppClientID)
 	params := map[string]*string{
-		"USERNAME": aws.String(u.Email),
-		"PASSWORD": aws.String(u.Password),
+		"USERNAME":    aws.String(u.Email),
+		"PASSWORD":    aws.String(u.Password),
 		"SECRET_HASH": aws.String(secretHash),
 	}
 
 	input := &cognito.InitiateAuthInput{
-		AuthFlow: aws.String("USER_PASSWORD_AUTH"),
+		AuthFlow:       aws.String("USER_PASSWORD_AUTH"),
 		AuthParameters: params,
-		ClientId: aws.String(a.AppClientID),
+		ClientId:       aws.String(a.AppClientID),
 	}
 	auth, err := a.CognitoClient.InitiateAuth(input)
 	if err != nil {
@@ -122,4 +122,18 @@ func (a *Auth) Login(u *User) (string, error) {
 	}
 	u.Token = *auth.AuthenticationResult.AccessToken
 	return u.Token, nil
+}
+
+func (a *Auth) Logout(u *User) (bool, error) {
+	// Signs out users from all devices.
+	input := &cognito.GlobalSignOutInput{
+		AccessToken: aws.String(u.Token),
+	}
+
+	_, err := a.CognitoClient.GlobalSignOut(input)
+	if err != nil {
+		log.Printf("Cognito Logout Error - %v", err)
+		return false, err
+	}
+	return true, nil
 }

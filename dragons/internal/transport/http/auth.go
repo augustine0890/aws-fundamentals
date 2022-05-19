@@ -59,5 +59,27 @@ func (h *Handler) login(w http.ResponseWriter, r *http.Request) {
 	res := map[string]string{
 		"access_token": token,
 	}
+
 	json.NewEncoder(w).Encode(res)
+}
+
+func (h *Handler) logout(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var u *auth.User
+	err := json.NewDecoder(r.Body).Decode(&u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	out, err := h.Auth.Logout(u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	res := map[string]bool{
+		"log_out": out,
+	}
+	json.NewEncoder(w).Encode(res)
+
 }
