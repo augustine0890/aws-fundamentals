@@ -101,3 +101,25 @@ func (a *Auth) ConfirmSignUp(uc *UserConfirm) (string, error) {
 
 	return result.String(), nil
 }
+
+func (a *Auth) Login(u *User) (string, error) {
+	secretHash := computeSecretHash(a.AppClientSecret, u.Email, a.AppClientID)
+	params := map[string]*string{
+		"USERNAME": aws.String(u.Email),
+		"PASSWORD": aws.String(u.Password),
+		"SECRET_HASH": aws.String(secretHash),
+	}
+
+	input := &cognito.InitiateAuthInput{
+		AuthFlow: aws.String("USER_PASSWORD_AUTH"),
+		AuthParameters: params,
+		ClientId: aws.String(a.AppClientID),
+	}
+	auth, err := a.CognitoClient.InitiateAuth(input)
+	if err != nil {
+		log.Printf("Cognito Login Error - %v", err)
+		return "", err
+	}
+	u.Token = *auth.AuthenticationResult.AccessToken
+	return u.Token, nil
+}

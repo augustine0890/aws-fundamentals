@@ -33,4 +33,5 @@
   - Access resourses with API Gateway and Lambda with a User Pool. API Gateway validate the tokens from a successful user pool authentication, and uses them to grant your users access to resourses including Lambda functions, or your own API.
   - After a successful user pool authentication, your app will receive user pool tokens from Amazon Cognito. You can exchange them for temporay access to other AWS services with an identity pool.
 - Temp [mail](https://tempmailo.com/) use cases for creating user (testing)
+- Secure Password [Generator](https://passwordsgenerator.net/)
 ## Serverless Computing and Lamda

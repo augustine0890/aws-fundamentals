@@ -38,5 +38,5 @@ func (h *Handler) mapRoutes() {
 	auth := h.Router.PathPrefix("/auth").Subrouter()
 	auth.HandleFunc("/sigup", h.sigup).Methods(http.MethodPost)
 	auth.HandleFunc("/confirm", h.confirm).Methods(http.MethodPost)
-
+	auth.HandleFunc("/login", h.login).Methods(http.MethodPost)
 }
