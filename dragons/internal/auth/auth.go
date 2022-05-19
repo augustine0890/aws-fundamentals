@@ -137,3 +137,25 @@ func (a *Auth) Logout(u *User) (bool, error) {
 	}
 	return true, nil
 }
+
+func (a *Auth) ForgotPassword(u *UserForgot) (string, error) {
+	secretHash := computeSecretHash(a.AppClientSecret, u.Email, a.AppClientID)
+
+	cognitoUser := &cognito.ForgotPasswordInput{
+		Username:   aws.String(u.Email),
+		ClientId:   aws.String(a.AppClientID),
+		SecretHash: aws.String(secretHash),
+	}
+	err := cognitoUser.Validate()
+	if err != nil {
+		log.Printf("Cognito User Error: %v", err)
+		return "", err
+	}
+
+	out, err := a.CognitoClient.ForgotPassword(cognitoUser)
+	if err != nil {
+		log.Printf("Cognito Login Error - %v", err)
+		return "", err
+	}
+	return out.String(), nil
+}

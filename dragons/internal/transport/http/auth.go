@@ -72,14 +72,33 @@ func (h *Handler) logout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	out, err := h.Auth.Logout(u)
+	_, err = h.Auth.Logout(u)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	res := map[string]bool{
-		"log_out": out,
+	res := map[string]string{
+		"username": u.Email,
+		"message":  "User Signed Out",
 	}
-	json.NewEncoder(w).Encode(res)
 
+	json.NewEncoder(w).Encode(res)
+}
+
+func (h *Handler) forgotPassword(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var uf *auth.UserForgot
+	err := json.NewDecoder(r.Body).Decode(&uf)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	res, err := h.Auth.ForgotPassword(uf)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(res))
 }
