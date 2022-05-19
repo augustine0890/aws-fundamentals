@@ -82,3 +82,22 @@ func (a *Auth) Register(u *User) (string, error) {
 	}
 	return result.String(), nil
 }
+
+func (a *Auth) ConfirmSignUp(uc *UserConfirm) (string, error) {
+	secretHash := computeSecretHash(a.AppClientSecret, uc.Email, a.AppClientID)
+
+	input := &cognito.ConfirmSignUpInput{
+		Username:         aws.String(uc.Email),
+		ConfirmationCode: aws.String(uc.ConfirmationCode),
+		ClientId:         aws.String(a.AppClientID),
+		SecretHash:       aws.String(secretHash),
+	}
+
+	result, err := a.CognitoClient.ConfirmSignUp(input)
+	if err != nil {
+		log.Printf("Cognito ConfirmSignUp Error - %v", err)
+		return "", err
+	}
+
+	return result.String(), nil
+}
