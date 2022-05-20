@@ -84,10 +84,10 @@ func (a *Auth) Register(u *User) (string, error) {
 }
 
 func (a *Auth) ConfirmSignUp(uc *UserConfirm) (string, error) {
-	secretHash := computeSecretHash(a.AppClientSecret, uc.Email, a.AppClientID)
+	secretHash := computeSecretHash(a.AppClientSecret, uc.User.Email, a.AppClientID)
 
 	input := &cognito.ConfirmSignUpInput{
-		Username:         aws.String(uc.Email),
+		Username:         aws.String(uc.User.Email),
 		ConfirmationCode: aws.String(uc.ConfirmationCode),
 		ClientId:         aws.String(a.AppClientID),
 		SecretHash:       aws.String(secretHash),
@@ -154,8 +154,27 @@ func (a *Auth) ForgotPassword(u *UserForgot) (string, error) {
 
 	out, err := a.CognitoClient.ForgotPassword(cognitoUser)
 	if err != nil {
-		log.Printf("Cognito Login Error - %v", err)
+		log.Printf("Cognito Forgot Password Error - %v", err)
 		return "", err
 	}
 	return out.String(), nil
+}
+
+func (a *Auth) ConfirmForgotPassword(uc *UserConfirm) (string, error) {
+	secretHash := computeSecretHash(a.AppClientSecret, uc.User.Email, a.AppClientID)
+
+	input := &cognito.ConfirmForgotPasswordInput{
+		Username:         aws.String(uc.User.Email),
+		ConfirmationCode: aws.String(uc.ConfirmationCode),
+		ClientId:         aws.String(a.AppClientID),
+		SecretHash:       aws.String(secretHash),
+		Password:         aws.String(uc.User.Password),
+	}
+
+	resp, err := a.CognitoClient.ConfirmForgotPassword(input)
+	if err != nil {
+		log.Printf("Cognito Confirm Forgot Password Error - %v", err)
+		return "", err
+	}
+	return resp.String(), nil
 }

@@ -7,7 +7,7 @@ type User struct {
 }
 
 type UserConfirm struct {
-	Email            string `json:"email"`
+	User             User   `json:"user"`
 	ConfirmationCode string `json:"confirmation_code"`
 }
 
