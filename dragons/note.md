@@ -36,3 +36,9 @@ Reference: AWS [Code](https://docs.aws.amazon.com/code-samples/latest/catalog/co
 - Temp [mail](https://tempmailo.com/) use cases for creating user (testing)
 - Secure Password [Generator](https://passwordsgenerator.net/)
 ## Serverless Computing and Lamda
+### Exercise 4: AWS Lambda Functions
+- AWS Lambda Functions [Exercise](https://aws-tc-largeobjects.s3.amazonaws.com/DEV-AWS-MO-BuildingRedux/node-exercise-4-lambda.html)
+- In this exercise, you deploy the `ListDragon`, `AddDragon`, and `ValidateDragon` Lambda functions. After you implement the functions, you then update the `GET` method in the application programming interface (API) to use the Lambda function.
+- Save the ARNs for the Lambda roles in environment variables:
+  - `export ROLE_ARN_READWRITE=aws iam get-role --role-name dragons-readwrite-lambda-role  --query 'Role.Arn' --output text`
+  -`export ROLE_ARN_READ=aws iam get-role --role-name dragons-read-lambda-role  --query 'Role.Arn' --output text`

@@ -2,7 +2,7 @@ module dragons
 
 go 1.17
 
-require github.com/aws/aws-sdk-go v1.44.15
+require github.com/aws/aws-sdk-go v1.44.19
 
 require (
 	github.com/gorilla/mux v1.8.0
