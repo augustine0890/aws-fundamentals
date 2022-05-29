@@ -42,3 +42,19 @@ Reference: AWS [Code](https://docs.aws.amazon.com/code-samples/latest/catalog/co
 - Save the ARNs for the Lambda roles in environment variables:
   - `export ROLE_ARN_READWRITE=aws iam get-role --role-name dragons-readwrite-lambda-role  --query 'Role.Arn' --output text`
   -`export ROLE_ARN_READ=aws iam get-role --role-name dragons-read-lambda-role  --query 'Role.Arn' --output text`
+
+### Exercise 5: AWS Step Functions
+- AWS Step Functions [Exercise](https://aws-tc-largeobjects.s3.amazonaws.com/DEV-AWS-MO-BuildingRedux/node-exercise-5-stepfunctions.html)
+- List the ARNs:
+  - `aws lambda list-functions --query 'Functions[].FunctionArn'`
+- Step Functions
+  - ARN of the new state machine:
+    - `arn:aws:iam::427591574411:role/service-role/StepFunctions-DragonsStateMachine-role-a700c3ef`
+- Role in IAM (role's ARN)
+  - `arn:aws:iam::427591574411:role/dragons-apig-role`
+- Update the POST (REST API)
+  - Remove mock integration
+  - Connect the method to a Step Functions workflow for the Lambda functions
+- Configure the mapping template
+  - The mapping template converts the `POST` body that the application sends into a body that Step Functions `StartExecution` method understands.
+- Re-enabling CORS and deploying the API
