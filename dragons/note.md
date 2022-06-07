@@ -36,6 +36,8 @@ Reference: AWS [Code](https://docs.aws.amazon.com/code-samples/latest/catalog/co
 - Temp [mail](https://tempmailo.com/) use cases for creating user (testing)
 - Secure Password [Generator](https://passwordsgenerator.net/)
 - API Gateway: 401 [Unauthorized](https://stackoverflow.com/questions/50778387/api-gateway-cognito-user-pool-authorizer-401-unauthorized?rq=1)
+- The ID token contains claims about the identity of the authenticated user, such as name and email. The Access token contains claims about the authenticated user, a list of the user's groups, and a list of scopes.
+- Using [tokens](https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-with-identity-providers.html) with user pools. More [here](https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-id-token.html)
 ## Serverless Computing and Lamda
 ### Exercise 4: AWS Lambda Functions
 - AWS Lambda Functions [Exercise](https://aws-tc-largeobjects.s3.amazonaws.com/DEV-AWS-MO-BuildingRedux/node-exercise-4-lambda.html)
