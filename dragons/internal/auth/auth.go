@@ -120,7 +120,7 @@ func (a *Auth) Login(u *User) (string, error) {
 		log.Printf("Cognito Login Error - %v", err)
 		return "", err
 	}
-	u.Token = *auth.AuthenticationResult.AccessToken
+	u.Token = *auth.AuthenticationResult.IdToken
 	return u.Token, nil
 }
 
