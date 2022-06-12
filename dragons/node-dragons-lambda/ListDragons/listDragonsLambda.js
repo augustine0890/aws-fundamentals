@@ -9,7 +9,8 @@
 // # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // # specific language governing permissions and limitations under the License.
 
-var AWS = require('aws-sdk');
+var AWSXRay = require('aws-xray-sdk')
+var AWS = AWSXRay.captureAWS(require('aws-sdk'));
 
 const s3 = new AWS.S3({
     region: 'us-east-1'

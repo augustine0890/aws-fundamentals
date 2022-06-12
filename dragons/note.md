@@ -61,3 +61,9 @@ Reference: AWS [Code](https://docs.aws.amazon.com/code-samples/latest/catalog/co
 - Configure the mapping template
   - The mapping template converts the `POST` body that the application sends into a body that Step Functions `StartExecution` method understands.
 - Re-enabling CORS and deploying the API
+
+### Exercise 6: Optimizing Application
+- Optimizing the [Application](https://aws-tc-largeobjects.s3.amazonaws.com/DEV-AWS-MO-BuildingRedux/node-exercise-6-optimizing.html)
+- Add X-Ray to Lambda function
+  - Create `.zip` package: `zip -r nodeListDragonsFunction.zip .`
+  - Update `ListDragons` function: `aws lambda update-function-code  --function-name ListDragons --zip-file fileb://nodeListDragonsFunction.zip`
