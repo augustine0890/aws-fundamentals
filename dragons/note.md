@@ -67,3 +67,8 @@ Reference: AWS [Code](https://docs.aws.amazon.com/code-samples/latest/catalog/co
 - Add X-Ray to Lambda function
   - Create `.zip` package: `zip -r nodeListDragonsFunction.zip .`
   - Update `ListDragons` function: `aws lambda update-function-code  --function-name ListDragons --zip-file fileb://nodeListDragonsFunction.zip`
+
+## The Serverless Framework
+- Install the `serverless`: `npm install -g serverless`
+- Go template
+  - `serverless create -t aws-go-dep -p myservice`
