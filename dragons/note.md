@@ -72,3 +72,12 @@ Reference: AWS [Code](https://docs.aws.amazon.com/code-samples/latest/catalog/co
 - Install the `serverless`: `npm install -g serverless`
 - Go template
   - `serverless create -t aws-go-dep -p myservice`
+
+## AWS Serverless Application Model (AWS SAM)
+- The AWS Serverless Application Model (AWS SAM) is an open-source framework that you can use to build serverless applications on AWS.
+- A serverless application is a combination of Lambda functions, event sources, and other resources that work together to perform tasks.
+- Follow these [instructions](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac.html) to install the latest version of the AWS SAM CLI.
+- The Makefile gives you three basic commands you will use to compile and package your Lambda function:
+  - `make clean`: remove the compiled executable and zipped package
+  - `make build`: compile the program to run in the Lambda go1.x runtime.
+  - `make package`: zip the compiled function for upload to the Management Console

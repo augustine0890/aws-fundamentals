@@ -1,12 +1,11 @@
-.PHONY: build clean deploy
-
-build:
-	dep ensure -v
-	env GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -o bin/hello hello/main.go
-	env GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -o bin/world world/main.go
+.PHONY: clean build package
 
 clean:
-	rm -rf ./bin ./vendor Gopkg.lock
+	rm -rf ./hello package.zip
 
-deploy: clean build
-	sls deploy --verbose
+build:
+	go get github.com/aws/aws-lambda-go/lambda
+	GOOS=linux GOARCH=amd64 go build -o hello .
+
+package:
+	zip -r package.zip hello
